@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Claude Web Interface</title>
+</head>
+<body>
+    <h1>Debug Information</h1>
+    <div id="debug"></div>
+    
+    <script>
+        const debug = document.getElementById('debug');
+        
+        // Test API connectivity
+        async function testAPI() {
+            debug.innerHTML = '<h2>Testing API Endpoints...</h2>';
+            
+            try {
+                // Test health endpoint
+                const healthRes = await fetch('/code/api/health');
+                const healthData = await healthRes.json();
+                debug.innerHTML += `<p>✅ Health Check: ${JSON.stringify(healthData)}</p>`;
+                
+                // Test projects endpoint
+                const projectsRes = await fetch('/code/api/projects', {
+                    credentials: 'include'
+                });
+                const projectsData = await projectsRes.json();
+                debug.innerHTML += `<p>✅ Projects: ${JSON.stringify(projectsData)}</p>`;
+                
+                // Check if React app loads
+                debug.innerHTML += '<h2>React App Status:</h2>';
+                debug.innerHTML += `<p>Root element exists: ${!!document.getElementById('root')}</p>`;
+                
+                // Check for assets
+                debug.innerHTML += '<h2>Asset Loading:</h2>';
+                const jsAsset = await fetch('/code/assets/index-sO0N_p5i.js', { method: 'HEAD' });
+                debug.innerHTML += `<p>JS Asset: ${jsAsset.ok ? '✅ OK' : '❌ Failed'}</p>`;
+                
+                const cssAsset = await fetch('/code/assets/index-CKgjKDuD.css', { method: 'HEAD' });
+                debug.innerHTML += `<p>CSS Asset: ${cssAsset.ok ? '✅ OK' : '❌ Failed'}</p>`;
+                
+            } catch (error) {
+                debug.innerHTML += `<p style="color: red;">❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        testAPI();
+    </script>
+</body>
+</html>

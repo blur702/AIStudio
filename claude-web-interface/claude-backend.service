@@ -1,0 +1,14 @@
+[Unit]
+Description=Claude Web Interface Backend
+After=network.target
+
+[Service]
+Type=simple
+User=kevin
+WorkingDirectory=/opt/code/claude-web-interface/backend
+Environment="PATH=/opt/code/claude-web-interface/backend/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+ExecStart=/opt/code/claude-web-interface/backend/venv/bin/gunicorn --bind 127.0.0.1:5001 --workers 2 wsgi:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
