@@ -1,0 +1,79 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+env:
+  FLASK_SECRET_KEY: ${{ secrets.FLASK_SECRET_KEY }}
+
+jobs:
+  test-backend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        
+    - name: Install backend dependencies
+      run: |
+        cd claude-web-interface/backend
+        python -m pip install --upgrade pip
+        pip install flask flask-cors pytest pytest-cov
+        
+    - name: Run backend tests
+      run: |
+        cd claude-web-interface/backend
+        # pytest --cov=app --cov-report=xml
+        echo "Add pytest when tests are implemented"
+        
+  test-frontend:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: claude-web-interface/frontend/package-lock.json
+        
+    - name: Install frontend dependencies
+      run: |
+        cd claude-web-interface/frontend
+        npm ci
+        
+    - name: Run frontend tests
+      run: |
+        cd claude-web-interface/frontend
+        # npm test
+        echo "Add npm test when tests are implemented"
+        
+    - name: Build frontend
+      run: |
+        cd claude-web-interface/frontend
+        npm run build
+        
+  security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Run security scan
+      uses: github/super-linter@v4
+      env:
+        DEFAULT_BRANCH: main
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        VALIDATE_PYTHON: true
+        VALIDATE_JAVASCRIPT_ES: true
+        VALIDATE_JSON: true
+        VALIDATE_YAML: true

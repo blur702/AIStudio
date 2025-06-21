@@ -14,7 +14,7 @@ import asyncio
 from functools import wraps
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key-here'
+app.config['SECRET_KEY'] = os.environ.get('FLASK_SECRET_KEY', 'dev-secret-key-change-in-production')
 CORS(app, origins=['http://localhost:3001', 'https://kevinalthaus.com', 'http://kevinalthaus.com'], supports_credentials=True)
 
 # Storage paths
