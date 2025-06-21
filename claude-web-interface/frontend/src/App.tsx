@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom'
 import api from './lib/api'
 import ProjectSelectionModal from './components/ProjectSelectionModal'
 import ChatInterface from './components/ChatInterface'
+import Help from './components/Help'
 
 interface Project {
   id: string
@@ -108,48 +110,69 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="app">
-      <header className="app-header">
-        <h1 className="header-title">Claude Web Interface</h1>
-        <div className="header-info">
-          {currentProject && (
-            <>
-              <div className="project-info">
-                Current Project: <strong>{currentProject.name}</strong>
-                {currentProject.is_temp && <span className="temp-badge">TEMP</span>}
-              </div>
-              <button className="button button-outline" onClick={handleChangeProject}>
-                Change Project
-              </button>
-              <button
-                className="save-button"
-                onClick={handleSaveSession}
-                disabled={!hasUnsavedChanges}
-              >
-                Save Session
-              </button>
-            </>
-          )}
-        </div>
-      </header>
+    <Router>
+      <div className="app">
+        <header className="app-header">
+          <div className="header-left">
+            <Link to="/" className="header-title-link">
+              <h1 className="header-title">Claude Web Interface</h1>
+            </Link>
+          </div>
+          <div className="header-info">
+            {currentProject && (
+              <>
+                <div className="project-info">
+                  Current Project: <strong>{currentProject.name}</strong>
+                  {currentProject.is_temp && <span className="temp-badge">TEMP</span>}
+                </div>
+                <button className="button button-outline" onClick={handleChangeProject}>
+                  Change Project
+                </button>
+                <button
+                  className="save-button"
+                  onClick={handleSaveSession}
+                  disabled={!hasUnsavedChanges}
+                >
+                  Save Session
+                </button>
+              </>
+            )}
+            <Link to="/help" className="help-link" title="Help & Documentation">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+            </Link>
+          </div>
+        </header>
 
-      <main className="app-content">
-        {showProjectModal && (
-          <ProjectSelectionModal
-            onSelectProject={handleProjectSelect}
-            onClose={() => setShowProjectModal(false)}
-          />
-        )}
+        <main className="app-content">
+          <Routes>
+            <Route path="/" element={
+              <>
+                {showProjectModal && (
+                  <ProjectSelectionModal
+                    onSelectProject={handleProjectSelect}
+                    onClose={() => setShowProjectModal(false)}
+                  />
+                )}
 
-        {currentProject && !showProjectModal && (
-          <ChatInterface
-            project={currentProject}
-            messages={messages}
-            onNewMessage={handleNewMessage}
-          />
-        )}
-      </main>
-    </div>
+                {currentProject && !showProjectModal && (
+                  <ChatInterface
+                    project={currentProject}
+                    messages={messages}
+                    onNewMessage={handleNewMessage}
+                  />
+                )}
+              </>
+            } />
+            <Route path="/help" element={<Help />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </main>
+      </div>
+    </Router>
   )
 }
 

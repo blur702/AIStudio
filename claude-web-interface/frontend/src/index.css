@@ -160,11 +160,40 @@ body {
   justify-content: space-between;
   align-items: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 60px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.header-title-link {
+  text-decoration: none;
+  color: inherit;
 }
 
 .header-title {
   font-size: 20px;
   font-weight: 600;
+}
+
+.help-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: transparent;
+  color: #ccc;
+  transition: all 0.2s ease;
+  margin-left: 16px;
+}
+
+.help-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
 .header-info {
@@ -200,7 +229,7 @@ body {
 
 /* Main Content */
 .app-content {
-  height: calc(100vh - 64px);
+  height: calc(100vh - 60px);
   display: flex;
   flex-direction: column;
 }
